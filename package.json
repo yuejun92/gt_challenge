@@ -1,0 +1,23 @@
+{
+  "name": "gt_challenge",
+  "version": "1.0.0",
+  "description": "challenge",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuejun92/gt_challenge.git"
+  },
+  "author": "Yue Jun",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yuejun92/gt_challenge/issues"
+  },
+  "homepage": "https://github.com/yuejun92/gt_challenge#readme",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0"
+  }
+}
