@@ -5,7 +5,8 @@ var ignoreFiles = [
   "controller.js",
   "app.js",
   "node_modules",
-  "controller.test.js"
+  "controller.test.js",
+  "README.md"
 ]
 
 
