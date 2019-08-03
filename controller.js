@@ -1,23 +1,42 @@
 const fs = require('fs');
 
-async function readTODO(path){
+
+var ignoreFiles = [
+  "controller.js",
+  "app.js",
+  "node_modules"
+]
+
+function read(path, searchString, arr){
+  return readTODO(path, searchString, arr);
+}
+
+/** recursive function to read directory and subdirectory to find the string
+* {path} parameter: string - main directory to be searched
+* {searchString} parameter: string - keyword to be searched
+* {arr} parameter: array - path of the files contained the keyword
+*/
+async function readTODO(path, searchString, arr){
   var files = await readDir(path);
   for(var i = 0; i < files.length; i++){
-    var file = files[i];
-    var currentFilePath = path + '/' + file;
+    // ingore files
+    if(ignoreFiles.indexOf(files[i]) === -1){
+      var file = files[i];
+      var currentFilePath = path + '/' + file;
 
-    // Check if current file is a folder
-    if (fs.statSync(currentFilePath).isDirectory()) {
-      // Continue to go in to folder
-      await readTODO(currentFilePath);
-    }
-    else{
-      // Read current file;
-      var data = await readFile(currentFilePath);
+      // Check if current file is a folder
+      if (fs.statSync(currentFilePath).isDirectory()) {
+        // Continue to go in to folder
+        await readTODO(currentFilePath, searchString, arr);
+      }
+      else{
+        // Read current file;
+        var data = await readFile(currentFilePath);
 
-      // Check if file contains "TODO" and ignore "app.js"
-      if(data.toString().includes("TODO") && file !== "app.js"){
-        console.log(currentFilePath);
+        // Check if file contains "TODO" and ignore files
+        if(data.toString().includes(searchString) && !ignoreFiles.includes(data)){
+          arr.push(currentFilePath);
+        }
       }
     }
   }
@@ -41,4 +60,4 @@ function readFile(path){
   })
 }
 
-module.exports.readTODO = readTODO;
+module.exports.read = read;
