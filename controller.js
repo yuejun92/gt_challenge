@@ -4,11 +4,20 @@ const fs = require('fs');
 var ignoreFiles = [
   "controller.js",
   "app.js",
-  "node_modules"
+  "node_modules",
+  "controller.test.js"
 ]
 
-function read(path, searchString, arr){
-  return readTODO(path, searchString, arr);
+
+/** read function
+* {path} parameter: string - main directory to be searched
+* {searchString} parameter: string - keyword to be searched
+* return  array - path of the files contained the keyword
+*/
+function searchKeyword(path, searchString){
+  var arr = [];
+  recursiveSearch(path, searchString, arr);
+  return arr;
 }
 
 /** recursive function to read directory and subdirectory to find the string
@@ -16,8 +25,8 @@ function read(path, searchString, arr){
 * {searchString} parameter: string - keyword to be searched
 * {arr} parameter: array - path of the files contained the keyword
 */
-async function readTODO(path, searchString, arr){
-  var files = await readDir(path);
+function recursiveSearch(path, searchString, arr){
+  var files = fs.readdirSync(path);
   for(var i = 0; i < files.length; i++){
     // ingore files
     if(ignoreFiles.indexOf(files[i]) === -1){
@@ -27,11 +36,11 @@ async function readTODO(path, searchString, arr){
       // Check if current file is a folder
       if (fs.statSync(currentFilePath).isDirectory()) {
         // Continue to go in to folder
-        await readTODO(currentFilePath, searchString, arr);
+        recursiveSearch(currentFilePath, searchString, arr);
       }
       else{
         // Read current file;
-        var data = await readFile(currentFilePath);
+        var data =  fs.readFileSync(currentFilePath);
 
         // Check if file contains "TODO" and ignore files
         if(data.toString().includes(searchString) && !ignoreFiles.includes(data)){
@@ -42,22 +51,4 @@ async function readTODO(path, searchString, arr){
   }
 }
 
-function readDir(path){
-  return new Promise((resolve, reject) => {
-    fs.readdir(path, function (err, files) {
-      if(err) reject(err);
-      resolve(files);
-    });
-  });
-}
-
-function readFile(path){
-  return new Promise((resolve, reject) => {
-    fs.readFile(path, function read(err, data) {
-      if(err) reject(err);
-      resolve(data);
-    });
-  })
-}
-
-module.exports.read = read;
+module.exports.searchKeyword = searchKeyword;
